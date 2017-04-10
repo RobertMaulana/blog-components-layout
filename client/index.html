@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.6/vue.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
+  </head>
+  <body>
+    <div class="app">
+      <parent-header></parent-header>
+      <content-component :article="article" v-on:get-article="getArticleOne"></content-component>
+      <single-content-component :single-article="singleArticle"></single-content-component>
+      <footer-component></footer-component>
+    </div>
+    <script type="text/javascript">
+
+      //Header component
+      Vue.component('brand-logo', function (resolve, reject) {
+        setTimeout(function () {
+          resolve({
+            template: `
+            <ul class="left hide-on-med-and-down">
+              <li><a href="#"><i class="large material-icons">polymer</i></a></li>
+            </ul>
+            `
+          })
+        }, 500)
+      })
+      Vue.component('menu-header-component', function (resolve, reject) {
+        setTimeout(function () {
+          resolve({
+            template: `
+            <ul class="right hide-on-med-and-down">
+              <li><a href="#">About</a></li>
+              <li><a href="#">Profile</a></li>
+            </ul>
+            `
+          })
+        }, 500)
+      })
+      Vue.component('parent-header', function (resolve, reject) {
+        setTimeout(function () {
+          resolve({
+            template: `
+            <nav>
+              <div class="nav-wrapper">
+                <brand-logo></brand-logo>
+                <menu-header-component></menu-header-component>
+              </div>
+            </nav>
+            `
+          })
+        }, 500)
+      })
+
+      // content component
+      // Vue.component('post-component', function (resolve, reject) {
+      //   setTimeout(function () {
+      //     resolve({
+      //       props: ['dataArticle'],
+      //       template: `
+      //         <div class="card small">
+      //           <div class="card-image" >
+      //             <img src="https://openclipart.org/image/2400px/svg_to_png/195741/Science-Explosion.png">
+      //             <span class="card-title"></span>
+      //           </div>
+      //           <div class="card-content">
+      //             <p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>
+      //           </div>
+      //           <div class="card-action">
+      //             <a href="#">Read More...</a>
+      //           </div>
+      //         </div>
+      //       `
+      //     })
+      //   }, 500)
+      // })
+      Vue.component('sidebar-component', function (resolve, reject) {
+        setTimeout(function () {
+          resolve({
+            props: ['article'],
+            template: `
+            <div class="collection" >
+              <div v-for="articles in article">
+                <a class="collection-item" v-on:click="articleById(articles)">{{ articles.title }}</a>
+              </div>
+            </div>
+            `,
+            methods: {
+              articleById: function(data){
+                this.$emit("list-item", data)
+              }
+            }
+          })
+        }, 500)
+      })
+      Vue.component('content-component', function (resolve, reject) {
+        setTimeout(function () {
+          resolve({
+            props: ['article'],
+            template: `
+            <div class="row">
+                <div class="col s9">
+                <div v-for="articles in article">
+                  <div class="card small">
+                    <div class="card-image" >
+                      <img :src="articles.image">
+                      <span class="card-title">{{ articles.title }}</span>
+                    </div>
+                    <div class="card-content">
+                      <p>{{ articles.content }}</p>
+                    </div>
+                    <div class="card-action">
+                      <a href="#">Read More...</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col s3">
+                <sidebar-component :article="article" v-on:list-item="getArticleOne"></sidebar-component>
+              </div>
+            </div>
+            `,
+            methods: {
+              getArticleOne: function(data){
+                this.$emit("get-article", data)
+              }
+            }
+          })
+        }, 500)
+      })
+      Vue.component('single-content-component', function (resolve, reject) {
+        setTimeout(function () {
+          resolve({
+            props: ['singleArticle'],
+            template: `
+            <div class="row">
+                <div class="col s9">
+                  <div class="card small">
+                    <div class="card-image" >
+                      <img :src="singleArticle.image">
+                      <span class="card-title">{{ singleArticle.title }}</span>
+                    </div>
+                    <div class="card-content">
+                      <p>{{ singleArticle.content }}</p>
+                    </div>
+                    <div class="card-action">
+                      <a href="#">Read More...</a>
+                    </div>
+                  </div>
+              </div>
+            </div>
+            `
+          })
+        }, 500)
+      })
+
+      // footer component
+      Vue.component('child-1-component', function (resolve, reject) {
+        setTimeout(function () {
+          resolve({
+            template: `
+            <div class="col l6 s12">
+              <h5 class="white-text">Footer Content</h5>
+              <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
+            </div>
+            `
+          })
+        }, 500)
+      })
+      Vue.component('child-2-component', function (resolve, reject) {
+        setTimeout(function () {
+          resolve({
+            template: `
+            <div class="col l4 offset-l2 s12">
+              <h5 class="white-text">Links</h5>
+              <ul>
+                <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
+                <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
+                <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
+                <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
+              </ul>
+            </div>
+            `
+          })
+        }, 500)
+      })
+      Vue.component('last-child-component', function (resolve, reject) {
+        setTimeout(function () {
+          resolve({
+            template: `
+            <div class="footer-copyright">
+              <div class="container">
+              Powered by Google ©2010-2017. Code licensed under an MIT-style License. Documentation licensed under CC BY 4.0.
+              <a class="grey-text text-lighten-4 right" href="#!">Copyright @2017</a>
+              </div>
+            </div>
+            `
+          })
+        }, 500)
+      })
+      Vue.component('footer-component', function (resolve, reject) {
+        setTimeout(function () {
+          resolve({
+            template: `
+            <footer class="page-footer">
+                <div class="row">
+                    <child-1-component></child-1-component>
+                    <child-2-component></child-2-component>
+                </div>
+              <last-child-component></last-child-component>
+            </footer>
+            `
+          })
+        }, 500)
+      })
+
+      new Vue({
+        el: ".app",
+        data: {
+          article: [],
+          singleArticle: {},
+          category: []
+        },
+        methods: {
+          allArticle: function(){
+            let articleData = this;
+            axios.get('http://localhost:3000/api/article')
+            .then(function (response) {
+              articleData.article = response.data;
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+          },
+          getArticleOne: function(data){
+            this.article = "";
+            this.singleArticle = data;
+            // console.log(data);
+
+          }
+        },
+        mounted: function(){
+          this.allArticle()
+        }
+      })
+
+    </script>
+  </body>
+</html>
