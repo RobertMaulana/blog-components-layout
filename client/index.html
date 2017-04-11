@@ -13,12 +13,10 @@
   <body>
     <div class="app">
       <parent-header></parent-header>
-      <content-component :article="article" v-on:get-article="getArticleOne"></content-component>
-      <single-content-component :single-article="singleArticle"></single-content-component>
+      <content-component :article="article"></content-component>
       <footer-component></footer-component>
     </div>
     <script type="text/javascript">
-
       //Header component
       Vue.component('brand-logo', function (resolve, reject) {
         setTimeout(function () {
@@ -59,27 +57,58 @@
       })
 
       // content component
-      // Vue.component('post-component', function (resolve, reject) {
-      //   setTimeout(function () {
-      //     resolve({
-      //       props: ['dataArticle'],
-      //       template: `
-      //         <div class="card small">
-      //           <div class="card-image" >
-      //             <img src="https://openclipart.org/image/2400px/svg_to_png/195741/Science-Explosion.png">
-      //             <span class="card-title"></span>
-      //           </div>
-      //           <div class="card-content">
-      //             <p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>
-      //           </div>
-      //           <div class="card-action">
-      //             <a href="#">Read More...</a>
-      //           </div>
-      //         </div>
-      //       `
-      //     })
-      //   }, 500)
-      // })
+      Vue.component('sidebar-component', function (resolve, reject) {
+        setTimeout(function () {
+          resolve({
+            props: ['article'],
+            template: `
+            <div class="collection">
+              <div v-for="articles in article">
+                <a class="collection-item" v-on:click="articleById(articles)">{{ articles.title }}</a>
+              </div>
+            </div>
+            `,
+            methods: {
+              articleById: function(data){
+                this.$emit("list-item", data)
+              }
+            }
+          })
+        }, 500)
+      })
+      Vue.component('content-component', function (resolve, reject) {
+        setTimeout(function () {
+          resolve({
+            props: ['article'],
+            template: `
+              <div class="row">
+                  <div class="col s9">
+                  <div v-for="articles in article">
+                    <div class="card small">
+                      <div class="card-image" >
+                        <img :src="articles.image">
+                        <span class="card-title">{{ articles.title }}</span>
+                      </div>
+                      <div class="card-content">
+                        <p>{{ articles.content }}</p>
+                      </div>
+                      <div class="card-action">
+                        <a href="#">Read More...</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            `,
+            methods: {
+              getArticleOne: function(data){
+                this.$emit("get-article", data)
+              }
+            }
+          })
+        }, 500)
+      })
       Vue.component('sidebar-component', function (resolve, reject) {
         setTimeout(function () {
           resolve({
@@ -104,27 +133,27 @@
           resolve({
             props: ['article'],
             template: `
-            <div class="row">
-                <div class="col s9">
-                <div v-for="articles in article">
-                  <div class="card small">
-                    <div class="card-image" >
-                      <img :src="articles.image">
-                      <span class="card-title">{{ articles.title }}</span>
-                    </div>
-                    <div class="card-content">
-                      <p>{{ articles.content }}</p>
-                    </div>
-                    <div class="card-action">
-                      <a href="#">Read More...</a>
+              <div class="row">
+                  <div class="col s9">
+                  <div v-for="articles in article">
+                    <div class="card small">
+                      <div class="card-image" >
+                        <img :src="articles.image">
+                        <span class="card-title">{{ articles.title }}</span>
+                      </div>
+                      <div class="card-content">
+                        <p>{{ articles.content }}</p>
+                      </div>
+                      <div class="card-action">
+                        <a href="#">Read More...</a>
+                      </div>
                     </div>
                   </div>
                 </div>
+                <div class="col s3">
+                  <sidebar-component :article="article" v-on:list-item="getArticleOne"></sidebar-component>
+                </div>
               </div>
-              <div class="col s3">
-                <sidebar-component :article="article" v-on:list-item="getArticleOne"></sidebar-component>
-              </div>
-            </div>
             `,
             methods: {
               getArticleOne: function(data){
@@ -232,7 +261,8 @@
             let articleData = this;
             axios.get('http://localhost:3000/api/article')
             .then(function (response) {
-              articleData.article = response.data;
+              articleData.article = response.data[0];
+              // console.log(response.data[0]);
             })
             .catch(function (error) {
               console.log(error);
